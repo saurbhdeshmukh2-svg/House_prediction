@@ -3,6 +3,7 @@ import pandas as pd
 import joblib
 import plotly.graph_objects as go
 
+
 # ============================================================
 # PAGE CONFIGURATION
 # ============================================================
@@ -14,27 +15,27 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+
 # ============================================================
-# CUSTOM CSS DESIGN
+# CUSTOM CSS
 # ============================================================
 
 st.markdown("""
 <style>
 
+/* Background */
 .stApp {
-    background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+    background: linear-gradient(
+        135deg,
+        #f8fafc 0%,
+        #eef2ff 100%
+    );
 }
 
-/* Main Container */
-.block-container {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-}
-
-/* Main Title */
+/* Main title */
 .main-title {
     text-align: center;
-    font-size: 45px;
+    font-size: 42px;
     font-weight: 800;
     color: #172554;
     margin-bottom: 5px;
@@ -48,47 +49,10 @@ st.markdown("""
     margin-bottom: 25px;
 }
 
-/* Prediction Card */
-.prediction-card {
-    background: linear-gradient(
-        135deg,
-        #1e3a8a 0%,
-        #2563eb 50%,
-        #4f46e5 100%
-    );
-
-    padding: 35px;
-    border-radius: 24px;
-    text-align: center;
-    color: white;
-
-    box-shadow:
-        0px 15px 35px rgba(37, 99, 235, 0.25);
-
-    margin: 20px 0 30px 0;
-}
-
-.prediction-title {
-    font-size: 20px;
-    font-weight: 500;
-    opacity: 0.9;
-}
-
-.prediction-price {
-    font-size: 48px;
-    font-weight: 800;
-    margin: 8px 0;
-}
-
-.prediction-subtitle {
-    font-size: 14px;
-    opacity: 0.85;
-}
-
-/* Section Heading */
+/* Section title */
 .section-title {
-    font-size: 27px;
-    font-weight: 750;
+    font-size: 26px;
+    font-weight: 700;
     color: #172554;
     margin-top: 20px;
     margin-bottom: 15px;
@@ -98,23 +62,17 @@ st.markdown("""
 [data-testid="stSidebar"] {
     background: linear-gradient(
         180deg,
-        #ffffff 0%,
-        #eef2ff 100%
+        #ffffff,
+        #eef2ff
     );
 }
 
-/* Sidebar Heading */
-[data-testid="stSidebar"] h1 {
-    color: #172554;
-}
-
-/* Buttons */
-.stButton > button {
-    width: 100%;
-    height: 50px;
-    border-radius: 12px;
-    font-size: 17px;
-    font-weight: 700;
+/* Metric styling */
+[data-testid="stMetric"] {
+    background: white;
+    padding: 18px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.07);
 }
 
 /* Footer */
@@ -123,13 +81,6 @@ st.markdown("""
     color: #64748b;
     padding: 30px;
     font-size: 14px;
-}
-
-/* Divider */
-hr {
-    border: none;
-    height: 1px;
-    background: #dbeafe;
 }
 
 </style>
@@ -149,7 +100,15 @@ def load_model():
     return model, scaler
 
 
-model, scaler = load_model()
+try:
+
+    model, scaler = load_model()
+
+except Exception as e:
+
+    st.error("Unable to load model.joblib or scaler.joblib")
+    st.error(str(e))
+    st.stop()
 
 
 # ============================================================
@@ -177,13 +136,14 @@ st.divider()
 
 st.sidebar.title("🏡 Property Details")
 
-st.sidebar.markdown(
-    "Enter the property information below."
+st.sidebar.write(
+    "Enter the property information:"
 )
 
 st.sidebar.divider()
 
 
+# CRIM
 CRIM = st.sidebar.number_input(
     "CRIM - Crime Rate",
     min_value=0.0,
@@ -191,23 +151,31 @@ CRIM = st.sidebar.number_input(
     format="%.4f"
 )
 
+
+# ZN
 ZN = st.sidebar.number_input(
     "ZN - Residential Land %",
     min_value=0.0,
     value=0.0
 )
 
+
+# INDUS
 INDUS = st.sidebar.number_input(
     "INDUS - Business Land %",
     min_value=0.0,
     value=10.0
 )
 
+
+# CHAS
 CHAS = st.sidebar.selectbox(
     "CHAS - Charles River",
-    [0, 1]
+    options=[0, 1]
 )
 
+
+# NOX
 NOX = st.sidebar.number_input(
     "NOX - Nitric Oxide",
     min_value=0.0,
@@ -215,6 +183,8 @@ NOX = st.sidebar.number_input(
     format="%.4f"
 )
 
+
+# RM
 RM = st.sidebar.number_input(
     "RM - Average Rooms",
     min_value=0.0,
@@ -222,12 +192,16 @@ RM = st.sidebar.number_input(
     format="%.2f"
 )
 
+
+# AGE
 AGE = st.sidebar.number_input(
     "AGE - House Age %",
     min_value=0.0,
     value=60.0
 )
 
+
+# DIS
 DIS = st.sidebar.number_input(
     "DIS - Employment Distance",
     min_value=0.0,
@@ -235,18 +209,24 @@ DIS = st.sidebar.number_input(
     format="%.4f"
 )
 
+
+# RAD
 RAD = st.sidebar.number_input(
     "RAD - Highway Accessibility",
     min_value=0.0,
     value=5.0
 )
 
+
+# TAX
 TAX = st.sidebar.number_input(
     "TAX - Property Tax",
     min_value=0.0,
     value=300.0
 )
 
+
+# PTRATIO
 PTRATIO = st.sidebar.number_input(
     "PTRATIO - Pupil Teacher Ratio",
     min_value=0.0,
@@ -254,6 +234,8 @@ PTRATIO = st.sidebar.number_input(
     format="%.2f"
 )
 
+
+# B
 B = st.sidebar.number_input(
     "B - Population Index",
     min_value=0.0,
@@ -261,6 +243,8 @@ B = st.sidebar.number_input(
     format="%.2f"
 )
 
+
+# LSTAT
 LSTAT = st.sidebar.number_input(
     "LSTAT - Lower Status %",
     min_value=0.0,
@@ -270,7 +254,7 @@ LSTAT = st.sidebar.number_input(
 
 
 # ============================================================
-# FEATURE DATA
+# INPUT DATAFRAME
 # ============================================================
 
 features = [
@@ -289,6 +273,7 @@ features = [
     "LSTAT"
 ]
 
+
 values = [
     CRIM,
     ZN,
@@ -305,6 +290,7 @@ values = [
     LSTAT
 ]
 
+
 input_data = pd.DataFrame(
     [values],
     columns=features
@@ -312,7 +298,7 @@ input_data = pd.DataFrame(
 
 
 # ============================================================
-# MACHINE LEARNING PREDICTION
+# PREDICTION
 # ============================================================
 
 try:
@@ -323,40 +309,55 @@ try:
 
     predicted_price = float(prediction[0])
 
-except Exception as error:
+except Exception as e:
 
-    st.error(f"Prediction Error: {error}")
+    st.error("Prediction failed.")
+    st.error(str(e))
     st.stop()
 
 
 # ============================================================
-# PREDICTION RESULT CARD
+# PREDICTION RESULT
 # ============================================================
 
 st.markdown(
-    f"""
-    <div class="prediction-card">
-
-        <div class="prediction-title">
-            Estimated House Price
-        </div>
-
-        <div class="prediction-price">
-            ${predicted_price:,.2f}
-        </div>
-
-        <div class="prediction-subtitle">
-            Machine Learning Prediction
-        </div>
-
-    </div>
-    """,
+    '<div class="section-title">🏠 Prediction Result</div>',
     unsafe_allow_html=True
 )
 
 
+result_col1, result_col2, result_col3 = st.columns(3)
+
+
+with result_col1:
+
+    st.metric(
+        label="🏠 Average Rooms",
+        value=f"{RM:.2f}"
+    )
+
+
+with result_col2:
+
+    st.metric(
+        label="💰 Estimated House Price",
+        value=f"${predicted_price:,.2f}"
+    )
+
+
+with result_col3:
+
+    st.metric(
+        label="📊 Lower Status %",
+        value=f"{LSTAT:.2f}%"
+    )
+
+
+st.success("✅ Machine Learning Prediction")
+
+
 # ============================================================
-# KPI CARDS
+# PROPERTY OVERVIEW
 # ============================================================
 
 st.markdown(
@@ -364,34 +365,39 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+
 col1, col2, col3, col4 = st.columns(4)
+
 
 with col1:
 
     st.metric(
-        label="🏠 Average Rooms",
-        value=f"{RM:.2f}"
+        "📍 Crime Rate",
+        f"{CRIM:.4f}"
     )
+
 
 with col2:
 
     st.metric(
-        label="📍 Crime Rate",
-        value=f"{CRIM:.4f}"
+        "🏠 Average Rooms",
+        f"{RM:.2f}"
     )
+
 
 with col3:
 
     st.metric(
-        label="💰 Property Tax",
-        value=f"{TAX:.0f}"
+        "💰 Property Tax",
+        f"{TAX:.0f}"
     )
+
 
 with col4:
 
     st.metric(
-        label="📊 Lower Status %",
-        value=f"{LSTAT:.2f}%"
+        "🛣️ Highway Access",
+        f"{RAD:.0f}"
     )
 
 
@@ -406,6 +412,7 @@ st.markdown(
     '<div class="section-title">📈 Property Feature Analysis</div>',
     unsafe_allow_html=True
 )
+
 
 chart_col1, chart_col2 = st.columns(2)
 
@@ -449,7 +456,9 @@ with chart_col1:
         ]
     })
 
+
     fig1 = go.Figure()
+
 
     fig1.add_trace(
         go.Bar(
@@ -460,19 +469,15 @@ with chart_col1:
         )
     )
 
+
     fig1.update_layout(
         title="Property Feature Values",
         xaxis_title="Features",
         yaxis_title="Value",
         template="plotly_white",
-        height=450,
-        margin=dict(
-            l=20,
-            r=20,
-            t=60,
-            b=20
-        )
+        height=450
     )
+
 
     st.plotly_chart(
         fig1,
@@ -481,7 +486,7 @@ with chart_col1:
 
 
 # ============================================================
-# CHART 2 - IMPORTANT FEATURES
+# CHART 2 - KEY FEATURES
 # ============================================================
 
 with chart_col2:
@@ -505,7 +510,9 @@ with chart_col2:
         ]
     })
 
+
     fig2 = go.Figure()
+
 
     fig2.add_trace(
         go.Bar(
@@ -516,19 +523,15 @@ with chart_col2:
         )
     )
 
+
     fig2.update_layout(
         title="Key Property Indicators",
         xaxis_title="Features",
         yaxis_title="Value",
         template="plotly_white",
-        height=450,
-        margin=dict(
-            l=20,
-            r=20,
-            t=60,
-            b=20
-        )
+        height=450
     )
+
 
     st.plotly_chart(
         fig2,
@@ -542,40 +545,34 @@ with chart_col2:
 
 st.divider()
 
+
 st.markdown(
-    '<div class="section-title">💰 Prediction Chart</div>',
+    '<div class="section-title">💰 House Price Prediction Chart</div>',
     unsafe_allow_html=True
 )
 
+
 prediction_chart = go.Figure()
+
 
 prediction_chart.add_trace(
     go.Bar(
-        x=["Boston House"],
+        x=["Predicted House Price"],
         y=[predicted_price],
         text=[f"${predicted_price:,.2f}"],
-        textposition="outside",
-        marker=dict(
-            line=dict(
-                width=1
-            )
-        )
+        textposition="outside"
     )
 )
 
+
 prediction_chart.update_layout(
-    title="Predicted House Price",
+    title="Boston House Price Prediction",
     xaxis_title="Property",
     yaxis_title="Predicted Price",
     template="plotly_white",
-    height=420,
-    margin=dict(
-        l=30,
-        r=30,
-        t=70,
-        b=30
-    )
+    height=450
 )
+
 
 st.plotly_chart(
     prediction_chart,
@@ -592,27 +589,40 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-summary_col1, summary_col2, summary_col3 = st.columns(3)
 
-with summary_col1:
+summary1, summary2, summary3 = st.columns(3)
+
+
+with summary1:
 
     st.info(
-        f"🏠 **Predicted Price**\n\n"
-        f"### ${predicted_price:,.2f}"
+        f"""
+        ### 💰 Predicted Price
+
+        **${predicted_price:,.2f}**
+        """
     )
 
-with summary_col2:
+
+with summary2:
 
     st.info(
-        f"🛏️ **Average Rooms**\n\n"
-        f"### {RM:.2f}"
+        f"""
+        ### 🏠 Average Rooms
+
+        **{RM:.2f}**
+        """
     )
 
-with summary_col3:
+
+with summary3:
 
     st.info(
-        f"📊 **Lower Status Population**\n\n"
-        f"### {LSTAT:.2f}%"
+        f"""
+        ### 📊 LSTAT
+
+        **{LSTAT:.2f}%**
+        """
     )
 
 
@@ -622,17 +632,21 @@ with summary_col3:
 
 st.divider()
 
+
 st.markdown(
     '<div class="section-title">📋 Input Data Summary</div>',
     unsafe_allow_html=True
 )
 
+
 display_data = input_data.T.reset_index()
+
 
 display_data.columns = [
     "Feature",
     "Value"
 ]
+
 
 st.dataframe(
     display_data,
@@ -646,6 +660,7 @@ st.dataframe(
 # ============================================================
 
 st.divider()
+
 
 with st.expander("⚙️ Model Information"):
 
@@ -676,15 +691,15 @@ st.markdown(
     """
     <div class="footer">
 
-        🏠 <b>Boston House Price Prediction</b>
+    🏠 Boston House Price Prediction
 
-        <br><br>
+    <br>
 
-        Machine Learning Regression Project
+    Machine Learning Regression Project
 
-        <br>
+    <br><br>
 
-        Built with Python • Scikit-learn • Streamlit • Plotly
+    Built with Python • Scikit-learn • Streamlit • Plotly
 
     </div>
     """,
